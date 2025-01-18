@@ -45,8 +45,12 @@
                                                     Proses
                                                 </span>
                                             @elseif($data->status == 'Diterima')
-                                                <span class="badge badge-success">
+                                                <span class="badge badge-info">
                                                     Diterima
+                                                </span>
+                                            @elseif($data->status == 'Disetujui')
+                                                <span class="badge badge-success">
+                                                    Disetujui
                                                 </span>
                                             @elseif($data->status == 'Ditolak')
                                                 <span class="badge badge-danger">
@@ -65,7 +69,7 @@
                                                     class="btn btn-sm btn-info">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <form action="{{ route('pegawai-pengajuan.destroy',$data->id) }}"
+                                                <form action="{{ route('pegawai-pengajuan.destroy', $data->id) }}"
                                                     method="POST">
                                                     @csrf
                                                     <button type="submit" class="btn btn-sm btn-danger mx-2"
@@ -75,7 +79,7 @@
                                                 </form>
                                             @else
                                                 <button type="button" class="btn btn-primary" disabled>
-                                                    {{ $data->status ?? '-'}}
+                                                    {{ $data->status ?? '-' }}
                                                 </button>
                                             @endif
                                         </td>

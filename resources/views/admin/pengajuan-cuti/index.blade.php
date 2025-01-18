@@ -45,8 +45,12 @@
                                                     Proses
                                                 </span>
                                             @elseif($data->status == 'Diterima')
-                                                <span class="badge badge-success">
+                                                <span class="badge badge-info">
                                                     Diterima
+                                                </span>
+                                            @elseif($data->status == 'Disetujui')
+                                                <span class="badge badge-success">
+                                                    Disetujui
                                                 </span>
                                             @elseif($data->status == 'Ditolak')
                                                 <span class="badge badge-danger">
@@ -68,7 +72,8 @@
                                             <!-- Edit Modal -->
                                             <div class="modal fade" id="EditModal{{ $data->id }}"
                                                 aria-labelledby="EditModalLabel" aria-hidden="true">
-                                                <form action="{{ route('data-pengajuancuti.update', $data->id) }}" method="POST">
+                                                <form action="{{ route('data-pengajuancuti.update', $data->id) }}"
+                                                    method="POST">
                                                     @csrf
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
@@ -104,7 +109,8 @@
                                                                             <label>Jenis Cuti</label>
                                                                             <select name="jenis_cuti_id"
                                                                                 class="form-control @error('jenis_cuti_id') is-invalid @enderror"
-                                                                                id="selectedJenisCutiEdit" style="width: 100%">
+                                                                                id="selectedJenisCutiEdit"
+                                                                                style="width: 100%">
                                                                                 <option value="" selected>Pilih Jenis
                                                                                     Cuti</option>
                                                                                 @foreach ($jenis as $val)
@@ -126,7 +132,8 @@
                                                                             <label>Disetujui</label>
                                                                             <select name="disetujui_id"
                                                                                 class="form-control @error('disetujui_id') is-invalid @enderror"
-                                                                                id="selectedDisetujuiEdit" style="width: 100%">
+                                                                                id="selectedDisetujuiEdit"
+                                                                                style="width: 100%">
                                                                                 <option value="" selected>Pilih
                                                                                     Disetujui</option>
                                                                                 @foreach ($users as $val)
@@ -196,6 +203,9 @@
                                                                                 <option value="Diterima"
                                                                                     {{ $data->status == 'Diterima' ? 'selected' : '' }}>
                                                                                     Diterima</option>
+                                                                                <option value="Disetujui"
+                                                                                    {{ $data->status == 'Disetujui' ? 'selected' : '' }}>
+                                                                                    Disetujui</option>
                                                                                 <option value="Ditolak"
                                                                                     {{ $data->status == 'Ditolak' ? 'selected' : '' }}>
                                                                                     Ditolak
@@ -234,7 +244,8 @@
                                             </div>
 
                                             {{-- =========================================== --}}
-                                            <form action="{{ route('data-pengajuancuti.destroy', $data->id) }}" method="POST">
+                                            <form action="{{ route('data-pengajuancuti.destroy', $data->id) }}"
+                                                method="POST">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-danger mx-2"
                                                     onclick="return confirm('Apakah anda yakin untuk menghapus data ini ?')">
@@ -369,6 +380,9 @@
                                         </option>
                                         <option value="Diterima" {{ old('status') == 'Diterima' ? 'selected' : '' }}>
                                             Diterima</option>
+                                        <option value="Disetujui" {{ old('status') == 'Disetujui' ? 'selected' : '' }}>
+                                            Disetujui
+                                        </option>
                                         <option value="Ditolak" {{ old('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak
                                         </option>
                                     </select>

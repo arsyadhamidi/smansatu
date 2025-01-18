@@ -39,8 +39,12 @@
                                                     Proses
                                                 </span>
                                             @elseif($data->status == 'Diterima')
-                                                <span class="badge badge-success">
+                                                <span class="badge badge-info">
                                                     Diterima
+                                                </span>
+                                            @elseif($data->status == 'Disetujui')
+                                                <span class="badge badge-success">
+                                                    Disetujui
                                                 </span>
                                             @elseif($data->status == 'Ditolak')
                                                 <span class="badge badge-danger">
@@ -73,7 +77,7 @@
                                                 </form>
                                             @else
                                                 <button type="button" class="btn btn-primary" disabled>
-                                                    {{ $data->status ?? '-'}}
+                                                    {{ $data->status ?? '-' }}
                                                 </button>
                                             @endif
                                         </td>
