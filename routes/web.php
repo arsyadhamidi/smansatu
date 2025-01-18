@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\RegistrasiController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\KepalaTu\KepalaTuPengajuanCutiController;
 use App\Http\Controllers\Kepsek\KepsekPengajuanCutiController;
+use App\Http\Controllers\Landing\LandingController;
 use App\Http\Controllers\Pegawai\PegawaiPengajuanController;
 use App\Http\Controllers\Pegawai\PegawaiSaldoCutiController;
 use App\Http\Controllers\Setting\SettingController;
@@ -26,6 +27,9 @@ use App\Http\Controllers\Staf\StafPengajuanCutiController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// Landing
+Route::get('/', [LandingController::class, 'index'])->name('landing.index');
 
 // Login
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
