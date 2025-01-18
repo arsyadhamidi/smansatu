@@ -228,10 +228,49 @@
                                     <i class="nav-icon fas fa-book"></i>
                                     <p>Data Pengajuan Cuti
                                         @php
-                                            $pengajuan = \App\Models\PengajuanCuti::where('status', 'Pending')->count();
+                                            $stafPengajuan = \App\Models\PengajuanCuti::where(
+                                                'status',
+                                                'Pending',
+                                            )->count();
                                         @endphp
-                                        @if ($pengajuan)
-                                            <span class="right badge badge-danger">{{ $pengajuan ?? '0' }}</span>
+                                        @if ($stafPengajuan)
+                                            <span class="right badge badge-danger">{{ $stafPengajuan ?? '0' }}</span>
+                                        @endif
+                                    </p>
+                                </a>
+                            </li>
+                        @elseif(Auth()->user()->peran == '4')
+                            <li class="nav-item">
+                                <a href="{{ route('kepalatu-pengajuan.index') }}" class="nav-link @yield('menuPengajuanCuti')">
+                                    <i class="nav-icon fas fa-book"></i>
+                                    <p>Data Pengajuan Cuti
+                                        @php
+                                            $pengajuanKepala = \App\Models\PengajuanCuti::where(
+                                                'status',
+                                                'Proses',
+                                            )->count();
+                                        @endphp
+                                        @if ($pengajuanKepala)
+                                            <span
+                                                class="right badge badge-danger">{{ $pengajuanKepala ?? '0' }}</span>
+                                        @endif
+                                    </p>
+                                </a>
+                            </li>
+                        @elseif(Auth()->user()->peran == '5')
+                            <li class="nav-item">
+                                <a href="{{ route('kepsek-pengajuan.index') }}" class="nav-link @yield('menuPengajuanCuti')">
+                                    <i class="nav-icon fas fa-book"></i>
+                                    <p>Data Pengajuan Cuti
+                                        @php
+                                            $pengajuanKepsek = \App\Models\PengajuanCuti::where(
+                                                'status',
+                                                'Diterima',
+                                            )->count();
+                                        @endphp
+                                        @if ($pengajuanKepsek)
+                                            <span
+                                                class="right badge badge-danger">{{ $pengajuanKepsek ?? '0' }}</span>
                                         @endif
                                     </p>
                                 </a>

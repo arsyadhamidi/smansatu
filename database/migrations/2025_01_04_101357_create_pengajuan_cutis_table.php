@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('tgl_mulai');
             $table->date('tgl_selesai');
             $table->string('alasan');
-            $table->enum('status', ['Pending', 'Proses', 'Diterima', 'Ditolak']);
+            $table->enum('status', ['Pending', 'Proses', 'Diterima', 'Ditolak', 'Disetujui']);
             $table->timestamps();
         });
     }

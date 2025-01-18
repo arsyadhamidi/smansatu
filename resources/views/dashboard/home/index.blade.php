@@ -7,6 +7,10 @@
         @include('pegawai.index')
     @elseif (Auth()->user()->peran == '3')
         @include('staf.index')
+    @elseif (Auth()->user()->peran == '4')
+        @include('kepala-tu.index')
+    @elseif (Auth()->user()->peran == '5')
+        @include('kepsek.index')
     @endif
 @endsection
 @push('custom-script')

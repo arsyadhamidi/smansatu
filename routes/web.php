@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegistrasiController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\KepalaTu\KepalaTuPengajuanCutiController;
+use App\Http\Controllers\Kepsek\KepsekPengajuanCutiController;
 use App\Http\Controllers\Pegawai\PegawaiPengajuanController;
 use App\Http\Controllers\Pegawai\PegawaiSaldoCutiController;
 use App\Http\Controllers\Setting\SettingController;
@@ -93,5 +95,19 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/staf-pengajuan/index', [StafPengajuanCutiController::class, 'index'])->name('staf-pengajuan.index');
         Route::post('/staf-pengajuan/updateproses/{id}', [StafPengajuanCutiController::class, 'updateproses'])->name('staf-pengajuan.updateproses');
         Route::post('/staf-pengajuan/updatetolak/{id}', [StafPengajuanCutiController::class, 'updatetolak'])->name('staf-pengajuan.updatetolak');
+    });
+
+    // Kepala TU
+    Route::group(['middleware' => [CekLevel::class . ':4']], function () {
+        Route::get('/kepalatu-pengajuan/index', [KepalaTuPengajuanCutiController::class, 'index'])->name('kepalatu-pengajuan.index');
+        Route::post('/kepalatu-pengajuan/updateproses/{id}', [KepalaTuPengajuanCutiController::class, 'updateproses'])->name('kepalatu-pengajuan.updateproses');
+        Route::post('/kepalatu-pengajuan/updatetolak/{id}', [KepalaTuPengajuanCutiController::class, 'updatetolak'])->name('kepalatu-pengajuan.updatetolak');
+    });
+
+    // Kepsek
+    Route::group(['middleware' => [CekLevel::class . ':5']], function () {
+        Route::get('/kepsek-pengajuan/index', [KepsekPengajuanCutiController::class, 'index'])->name('kepsek-pengajuan.index');
+        Route::post('/kepsek-pengajuan/updateproses/{id}', [KepsekPengajuanCutiController::class, 'updateproses'])->name('kepsek-pengajuan.updateproses');
+        Route::post('/kepsek-pengajuan/updatetolak/{id}', [KepsekPengajuanCutiController::class, 'updatetolak'])->name('kepsek-pengajuan.updatetolak');
     });
 });
