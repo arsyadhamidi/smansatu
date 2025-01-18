@@ -49,14 +49,12 @@ class AdminPengajuanCutiController extends Controller
         $kuotaCuti = $jenis->kuota_cuti;
 
         // Hitung sisa cuti dari SaldoCuti
-        $sisaSaldo = SaldoCuti::where('users_id', $request->users_id)
+        $saldoCuti = SaldoCuti::where('users_id', $request->users_id)
             ->where('jenis_cuti_id', $request->jenis_cuti_id)
-            ->sum('total_sisa');
+            ->first();
 
         // Jika pengguna belum pernah mengambil cuti, set sisa saldo sama dengan kuota
-        if ($sisaSaldo === 0) {
-            $sisaSaldo = $kuotaCuti;
-        }
+        $sisaSaldo = $saldoCuti ? $saldoCuti->total_sisa : $kuotaCuti;
 
         // Hitung jumlah hari cuti yang diajukan
         $tglMulai = Carbon::parse($request->tgl_mulai);
@@ -82,15 +80,25 @@ class AdminPengajuanCutiController extends Controller
             'status' => $request->status,
         ]);
 
-        // Simpan data saldo cuti
-        SaldoCuti::create([
-            'users_id' => $request->users_id,
-            'jenis_cuti_id' => $request->jenis_cuti_id,
-            'pengajuan_cuti_id' => $pengajuans->id,
-            'total_hari' => $totalHari,
-            'total_terpakai' => $kuotaCuti - $saldoTerbaru,
-            'total_sisa' => $saldoTerbaru,
-        ]);
+        // Update atau buat data saldo cuti
+        if ($saldoCuti) {
+            // Update saldo cuti yang sudah ada
+            $saldoCuti->update([
+                'total_hari' => $totalHari,
+                'total_terpakai' => $kuotaCuti - $saldoTerbaru,
+                'total_sisa' => $saldoTerbaru,
+            ]);
+        } else {
+            // Jika tidak ada saldo cuti yang terkait, buat yang baru
+            SaldoCuti::create([
+                'users_id' => $request->users_id,
+                'jenis_cuti_id' => $request->jenis_cuti_id,
+                'pengajuan_cuti_id' => $pengajuans->id,
+                'total_hari' => $totalHari,
+                'total_terpakai' => $kuotaCuti - $saldoTerbaru,
+                'total_sisa' => $saldoTerbaru,
+            ]);
+        }
 
         return back()->with('success', 'Selamat! Anda berhasil melakukan pengajuan cuti!');
     }
@@ -181,7 +189,7 @@ class AdminPengajuanCutiController extends Controller
 
         return back()->with('success', 'Pengajuan cuti berhasil diperbarui!');
     }
-    
+
     public function destroy($id)
     {
         $pengajuanCuti = PengajuanCuti::findOrFail($id);
