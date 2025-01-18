@@ -5,12 +5,6 @@
         <div class="col-lg-12">
             <div class="mb-3">
                 <div class="card">
-                    <div class="card-header">
-                        <a href="{{ route('pegawai-pengajuan.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i>
-                            Tambah Pengajuan Cuti
-                        </a>
-                    </div>
                     <div class="card-body table-responsive">
                         <table class="table table-bordered table-striped" id="myTable">
                             <thead>
