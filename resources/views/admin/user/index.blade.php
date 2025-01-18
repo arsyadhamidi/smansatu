@@ -227,7 +227,7 @@
                                                                         <div class="mb-3">
                                                                             <select name="peran"
                                                                                 class="form-control @error('peran') is-invalid @enderror"
-                                                                                id="selectedPeran" style="width: 100%">
+                                                                                id="selectedPeranEdit" style="width: 100%">
                                                                                 <option value="" selected>Pilih Peran
                                                                                 </option>
                                                                                 <option value="1"
@@ -426,6 +426,9 @@
     <script>
         $(document).ready(function() {
             $('#selectedPeran').select2({
+                theme: 'bootstrap4'
+            });
+            $('#selectedPeranEdit').select2({
                 theme: 'bootstrap4'
             });
             $('#selectedSearchPeran').select2({
