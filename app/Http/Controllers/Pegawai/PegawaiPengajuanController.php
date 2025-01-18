@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Pegawai;
 
 use Carbon\Carbon;
 use App\Models\User;
@@ -9,47 +9,53 @@ use App\Models\SaldoCuti;
 use Illuminate\Http\Request;
 use App\Models\PengajuanCuti;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
-class AdminPengajuanCutiController extends Controller
+class PegawaiPengajuanController extends Controller
 {
+
     public function index()
     {
-        $pengajuans = PengajuanCuti::latest()->get();
-        $users = User::latest()->get();
+        $users = Auth::user();
+        $pengajuans = PengajuanCuti::where('users_id', $users->id)->latest()->get();
         $jenis = JenisCuti::latest()->get();
-        return view('admin.pengajuan-cuti.index', [
+        return view('pegawai.pengajuan.index', [
             'pengajuans' => $pengajuans,
-            'users' => $users,
             'jenis' => $jenis,
+        ]);
+    }
+
+    public function create()
+    {
+        $jenis = JenisCuti::latest()->get();
+        $users = User::latest()->get();
+        return view('pegawai.pengajuan.create', [
+            'jenis' => $jenis,
+            'users' => $users,
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'users_id' => 'required',
             'jenis_cuti_id' => 'required',
-            'disetujui_id' => 'required',
             'tgl_mulai' => 'required|date',
             'tgl_selesai' => 'required|date',
             'alasan' => 'required|max:255',
-            'status' => 'required',
         ], [
-            'users_id.required' => 'Pengguna wajib diisi',
             'jenis_cuti_id.required' => 'Jenis Cuti wajib diisi',
-            'disetujui_id.required' => 'Disetujui wajib diisi',
             'tgl_mulai.required' => 'Tanggal Mulai wajib diisi',
             'tgl_selesai.required' => 'Tanggal Selesai wajib diisi',
             'alasan.required' => 'Alasan wajib diisi',
-            'status.required' => 'Status wajib diisi',
         ]);
 
         // Ambil kuota cuti dari jenis cuti yang dipilih
         $jenis = JenisCuti::findOrFail($request->jenis_cuti_id);
         $kuotaCuti = $jenis->kuota_cuti;
+        $users = Auth::user();
 
         // Hitung sisa cuti dari SaldoCuti
-        $sisaSaldo = SaldoCuti::where('users_id', $request->users_id)
+        $sisaSaldo = SaldoCuti::where('users_id', $users->id)
             ->where('jenis_cuti_id', $request->jenis_cuti_id)
             ->sum('total_sisa');
 
@@ -73,18 +79,18 @@ class AdminPengajuanCutiController extends Controller
 
         // Simpan data pengajuan cuti
         $pengajuans = PengajuanCuti::create([
-            'users_id' => $request->users_id,
+            'users_id' => $users->id,
             'jenis_cuti_id' => $request->jenis_cuti_id,
             'disetujui_id' => $request->disetujui_id,
             'tgl_mulai' => $request->tgl_mulai,
             'tgl_selesai' => $request->tgl_selesai,
             'alasan' => $request->alasan,
-            'status' => $request->status,
+            'status' => 'Pending',
         ]);
 
         // Simpan data saldo cuti
         SaldoCuti::create([
-            'users_id' => $request->users_id,
+            'users_id' => $users->id,
             'jenis_cuti_id' => $request->jenis_cuti_id,
             'pengajuan_cuti_id' => $pengajuans->id,
             'total_hari' => $totalHari,
@@ -92,28 +98,36 @@ class AdminPengajuanCutiController extends Controller
             'total_sisa' => $saldoTerbaru,
         ]);
 
-        return back()->with('success', 'Selamat! Anda berhasil melakukan pengajuan cuti!');
+        return redirect()->route('pegawai-pengajuan.index')->with('success', 'Selamat! Anda berhasil melakukan pengajuan cuti!');
+    }
+
+    public function edit($id)
+    {
+        $jenis = JenisCuti::latest()->get();
+        $users = User::latest()->get();
+        $pengajuans = PengajuanCuti::where('id', $id)->first();
+        return view('pegawai.pengajuan.edit', [
+            'jenis' => $jenis,
+            'users' => $users,
+            'pengajuans' => $pengajuans,
+        ]);
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'users_id' => 'required',
             'jenis_cuti_id' => 'required',
-            'disetujui_id' => 'required',
             'tgl_mulai' => 'required|date',
             'tgl_selesai' => 'required|date',
             'alasan' => 'required|max:255',
-            'status' => 'required',
         ], [
-            'users_id.required' => 'Pengguna wajib diisi',
             'jenis_cuti_id.required' => 'Jenis Cuti wajib diisi',
-            'disetujui_id.required' => 'Disetujui wajib diisi',
             'tgl_mulai.required' => 'Tanggal Mulai wajib diisi',
             'tgl_selesai.required' => 'Tanggal Selesai wajib diisi',
             'alasan.required' => 'Alasan wajib diisi',
-            'status.required' => 'Status wajib diisi',
         ]);
+
+        $users = Auth::user();
 
         // Ambil data pengajuan cuti yang akan diperbarui
         $pengajuan = PengajuanCuti::findOrFail($id);
@@ -123,7 +137,7 @@ class AdminPengajuanCutiController extends Controller
         $kuotaCuti = $jenis->kuota_cuti;
 
         // Hitung sisa saldo awal
-        $sisaSaldo = SaldoCuti::where('users_id', $request->users_id)
+        $sisaSaldo = SaldoCuti::where('users_id', $users->id)
             ->where('jenis_cuti_id', $request->jenis_cuti_id)
             ->sum('total_sisa');
 
@@ -152,13 +166,11 @@ class AdminPengajuanCutiController extends Controller
 
         // Perbarui data pengajuan cuti
         $pengajuan->update([
-            'users_id' => $request->users_id,
             'jenis_cuti_id' => $request->jenis_cuti_id,
             'disetujui_id' => $request->disetujui_id,
             'tgl_mulai' => $request->tgl_mulai,
             'tgl_selesai' => $request->tgl_selesai,
             'alasan' => $request->alasan,
-            'status' => $request->status,
         ]);
 
         // Perbarui atau buat data saldo cuti baru
@@ -170,7 +182,7 @@ class AdminPengajuanCutiController extends Controller
             ]);
         } else {
             SaldoCuti::create([
-                'users_id' => $request->users_id,
+                'users_id' => $users->id,
                 'jenis_cuti_id' => $request->jenis_cuti_id,
                 'pengajuan_cuti_id' => $pengajuan->id,
                 'total_hari' => $totalHariBaru,
@@ -179,9 +191,9 @@ class AdminPengajuanCutiController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Pengajuan cuti berhasil diperbarui!');
+        return redirect()->route('pegawai-pengajuan.index')->with('success', 'Pengajuan cuti berhasil diperbarui!');
     }
-    
+
     public function destroy($id)
     {
         $pengajuanCuti = PengajuanCuti::findOrFail($id);

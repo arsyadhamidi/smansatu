@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegistrasiController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Pegawai\PegawaiPengajuanController;
+use App\Http\Controllers\Pegawai\PegawaiSaldoCutiController;
 use App\Http\Controllers\Setting\SettingController;
 
 /*
@@ -68,5 +70,20 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('/data-user/store', [AdminUserController::class, 'store'])->name('data-user.store');
         Route::post('/data-user/update/{id}', [AdminUserController::class, 'update'])->name('data-user.update');
         Route::post('/data-user/destroy/{id}', [AdminUserController::class, 'destroy'])->name('data-user.destroy');
+    });
+
+    // Pegawai
+    Route::group(['middleware' => [CekLevel::class . ':2']], function () {
+
+        // Saldo Cuti
+        Route::get('/pegawai-saldocuti/index', [PegawaiSaldoCutiController::class, 'index'])->name('pegawai-saldocuti.index');
+
+        // Pengajuan cuti
+        Route::get('/pegawai-pengajuan', [PegawaiPengajuanController::class, 'index'])->name('pegawai-pengajuan.index');
+        Route::get('/pegawai-pengajuan/create', [PegawaiPengajuanController::class, 'create'])->name('pegawai-pengajuan.create');
+        Route::get('/pegawai-pengajuan/edit/{id}', [PegawaiPengajuanController::class, 'edit'])->name('pegawai-pengajuan.edit');
+        Route::post('/pegawai-pengajuan/store', [PegawaiPengajuanController::class, 'store'])->name('pegawai-pengajuan.store');
+        Route::post('/pegawai-pengajuan/update/{id}', [PegawaiPengajuanController::class, 'update'])->name('pegawai-pengajuan.update');
+        Route::post('/pegawai-pengajuan/destroy/{id}', [PegawaiPengajuanController::class, 'destroy'])->name('pegawai-pengajuan.destroy');
     });
 });

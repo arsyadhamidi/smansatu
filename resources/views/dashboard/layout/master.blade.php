@@ -210,6 +210,18 @@
                                 </a>
                             </li>
                         @elseif(Auth()->user()->peran == '2')
+                            <li class="nav-item">
+                                <a href="{{ route('pegawai-pengajuan.index') }}" class="nav-link @yield('menuPengajuanCuti')">
+                                    <i class="nav-icon fas fa-book"></i>
+                                    <p>Pengajuan Cuti</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('pegawai-saldocuti.index') }}" class="nav-link @yield('menuSaldoCuti')">
+                                    <i class="nav-icon fas fa-file"></i>
+                                    <p>Data Saldo Cuti</p>
+                                </a>
+                            </li>
                         @endif
                         <!-- Tambahkan item sidebar lainnya -->
                     </ul>
