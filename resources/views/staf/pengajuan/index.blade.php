@@ -61,15 +61,19 @@
                                         <td>{{ $data->disetujui->name ?? '-' }}</td>
                                         <td class="d-flex">
                                             @if ($data->status == 'Pending')
-                                                <a href="{{ route('pegawai-pengajuan.edit', $data->id) }}"
-                                                    class="btn btn-sm btn-info">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <form action="{{ route('pegawai-pengajuan.destroy',$data->id) }}"
+                                                <form action="{{ route('staf-pengajuan.updateproses', $data->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-success mx-2"
+                                                        onclick="return confirm('Apakah anda yakin untuk memproses data ini ?')">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('staf-pengajuan.updatetolak', $data->id) }}"
                                                     method="POST">
                                                     @csrf
                                                     <button type="submit" class="btn btn-sm btn-danger mx-2"
-                                                        onclick="return confirm('Apakah anda yakin untuk menghapus data ini ?')">
+                                                        onclick="return confirm('Apakah anda yakin untuk menolak data ini ?')">
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                 </form>
@@ -89,35 +93,3 @@
         </div>
     </div>
 @endsection
-
-@push('custom-script')
-    <script>
-        $(document).ready(function() {
-            $('#selectedStatus').select2({
-                theme: 'bootstrap4'
-            });
-            $('#selectedDisetujui').select2({
-                theme: 'bootstrap4'
-            });
-            $('#selectedJenisCuti').select2({
-                theme: 'bootstrap4'
-            });
-            $('#selectedUser').select2({
-                theme: 'bootstrap4'
-            });
-
-            $('#selectedStatusEdit').select2({
-                theme: 'bootstrap4'
-            });
-            $('#selectedDisetujuiEdit').select2({
-                theme: 'bootstrap4'
-            });
-            $('#selectedJenisCutiEdit').select2({
-                theme: 'bootstrap4'
-            });
-            $('#selectedUserEdit').select2({
-                theme: 'bootstrap4'
-            });
-        });
-    </script>
-@endpush

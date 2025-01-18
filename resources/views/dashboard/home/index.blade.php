@@ -5,6 +5,8 @@
         @include('admin.index')
     @elseif (Auth()->user()->peran == '2')
         @include('pegawai.index')
+    @elseif (Auth()->user()->peran == '3')
+        @include('staf.index')
     @endif
 @endsection
 @push('custom-script')

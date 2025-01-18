@@ -12,6 +12,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Pegawai\PegawaiPengajuanController;
 use App\Http\Controllers\Pegawai\PegawaiSaldoCutiController;
 use App\Http\Controllers\Setting\SettingController;
+use App\Http\Controllers\Staf\StafPengajuanCutiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,5 +86,12 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('/pegawai-pengajuan/store', [PegawaiPengajuanController::class, 'store'])->name('pegawai-pengajuan.store');
         Route::post('/pegawai-pengajuan/update/{id}', [PegawaiPengajuanController::class, 'update'])->name('pegawai-pengajuan.update');
         Route::post('/pegawai-pengajuan/destroy/{id}', [PegawaiPengajuanController::class, 'destroy'])->name('pegawai-pengajuan.destroy');
+    });
+
+    // Staf
+    Route::group(['middleware' => [CekLevel::class . ':3']], function () {
+        Route::get('/staf-pengajuan/index', [StafPengajuanCutiController::class, 'index'])->name('staf-pengajuan.index');
+        Route::post('/staf-pengajuan/updateproses/{id}', [StafPengajuanCutiController::class, 'updateproses'])->name('staf-pengajuan.updateproses');
+        Route::post('/staf-pengajuan/updatetolak/{id}', [StafPengajuanCutiController::class, 'updatetolak'])->name('staf-pengajuan.updatetolak');
     });
 });

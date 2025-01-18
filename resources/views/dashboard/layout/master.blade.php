@@ -222,6 +222,20 @@
                                     <p>Data Saldo Cuti</p>
                                 </a>
                             </li>
+                        @elseif(Auth()->user()->peran == '3')
+                            <li class="nav-item">
+                                <a href="{{ route('staf-pengajuan.index') }}" class="nav-link @yield('menuPengajuanCuti')">
+                                    <i class="nav-icon fas fa-book"></i>
+                                    <p>Data Pengajuan Cuti
+                                        @php
+                                            $pengajuan = \App\Models\PengajuanCuti::where('status', 'Pending')->count();
+                                        @endphp
+                                        @if ($pengajuan)
+                                            <span class="right badge badge-danger">{{ $pengajuan ?? '0' }}</span>
+                                        @endif
+                                    </p>
+                                </a>
+                            </li>
                         @endif
                         <!-- Tambahkan item sidebar lainnya -->
                     </ul>
